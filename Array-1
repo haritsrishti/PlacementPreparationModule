@@ -1,14 +1,160 @@
-Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+1. Set Matrix Zeros
+Problem Statement: Given a matrix if an element in the matrix is 0 then you will have to set its entire column and row to 0 and then return the matrix.
 
-class Solution {
-    public boolean containsDuplicate(int[] nums) {
-        Set<Integer> set = new HashSet<>();
-        for (Integer x: nums) {
-            if (set.contains(x)) {
-                return true;
+import java.util.*;
+
+public class Main {
+    static ArrayList<ArrayList<Integer>> zeroMatrix(ArrayList<ArrayList<Integer>> matrix, int n, int m) {
+       
+        int col0 = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (matrix.get(i).get(j) == 0) {
+                    matrix.get(i).set(0, 0);
+                    if (j != 0)
+                        matrix.get(0).set(j, 0);
+                    else
+                        col0 = 0;
+                }
             }
-            set.add(x);
         }
-        return false;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < m; j++) {
+                if (matrix.get(i).get(j) != 0) {
+                    if (matrix.get(i).get(0) == 0 || matrix.get(0).get(j) == 0) {
+                        matrix.get(i).set(j, 0);
+                    }
+                }
+            }
+        }
+        if (matrix.get(0).get(0) == 0) {
+            for (int j = 0; j < m; j++) {
+                matrix.get(0).set(j, 0);
+            }
+        }
+        if (col0 == 0) {
+            for (int i = 0; i < n; i++) {
+                matrix.get(i).set(0, 0);
+            }
+        }
+
+        return matrix;
     }
+
+    public static void main(String[] args) {
+        ArrayList<ArrayList<Integer>> matrix = new ArrayList<>();
+        matrix.add(new ArrayList<>(Arrays.asList(1, 1, 1)));
+        matrix.add(new ArrayList<>(Arrays.asList(1, 0, 1)));
+        matrix.add(new ArrayList<>(Arrays.asList(1, 1, 1)));
+
+        int n = matrix.size();
+        int m = matrix.get(0).size();
+
+        ArrayList<ArrayList<Integer>> ans = zeroMatrix(matrix, n, m);
+
+        System.out.println("The Final matrix is: ");
+        for (ArrayList<Integer> row : ans) {
+            for (Integer ele : row) {
+                System.out.print(ele + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+
+2. Pascal's Triangle
+Problem Statement: This problem has 3 variations. They are stated below:
+
+
+import java.util.*;
+
+public class tUf {
+    public static List<Integer> generateRow(int row) {
+        long ans = 1;
+        List<Integer> ansRow = new ArrayList<>();
+        ansRow.add(1); 
+
+        for (int col = 1; col < row; col++) {
+            ans = ans * (row - col);
+            ans = ans / col;
+            ansRow.add((int)ans);
+        }
+        return ansRow;
+    }
+
+    public static List<List<Integer>> pascalTriangle(int n) {
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int row = 1; row <= n; row++) {
+            ans.add(generateRow(row));
+        }
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        int n = 5;
+        List<List<Integer>> ans = pascalTriangle(n);
+        for (List<Integer> it : ans) {
+            for (int ele : it) {
+                System.out.print(ele + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+
+3. Next Permutation
+Problem Statement: Given an array Arr[] of integers, rearrange the numbers of the given array into the lexicographically next greater permutation of numbers.
+
+
+import java.util.*;
+
+public class tUf {
+    public static List< Integer > nextGreaterPermutation(List< Integer > A) {
+        int n = A.size(); // size of the array.
+
+        int ind = -1; // break point
+        for (int i = n - 2; i >= 0; i--) {
+            if (A.get(i) < A.get(i + 1)) {
+                ind = i;
+                break;
+            }
+        }
+
+        if (ind == -1) {
+            // reverse the whole array:
+            Collections.reverse(A);
+            return A;
+        }
+
+        for (int i = n - 1; i > ind; i--) {
+            if (A.get(i) > A.get(ind)) {
+                int tmp = A.get(i);
+                A.set(i, A.get(ind));
+                A.set(ind, tmp);
+                break;
+            }
+        }
+
+        
+        List<Integer> sublist = A.subList(ind + 1, n);
+        Collections.reverse(sublist);
+
+        return A;
+    }
+
+    public static void main(String args[]) {
+        List<Integer> A = Arrays.asList(new Integer[] {2, 1, 5, 4, 3, 0, 0});
+        List<Integer> ans = nextGreaterPermutation(A);
+
+        System.out.print("The next permutation is: [");
+        for (int i = 0; i < ans.size(); i++) {
+            System.out.print(ans.get(i) + " ");
+        }
+        System.out.println("]");
+
+    }
+
 }
